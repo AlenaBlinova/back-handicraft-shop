@@ -1,0 +1,22 @@
+{
+  "name": "back_handicraft",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlenaBlinova/back_handicraft.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlenaBlinova/back_handicraft/issues"
+  },
+  "homepage": "https://github.com/AlenaBlinova/back_handicraft#readme",
+  "dependencies": {
+    "knex": "^1.0.3"
+  }
+}

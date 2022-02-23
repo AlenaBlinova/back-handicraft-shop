@@ -1,0 +1,126 @@
+exports.up = async (knex) => {
+    await knex.schema.createTable("users", (table) => {
+      table.increments("id");
+      table.string("name").notNullable();
+      table.string("email").notNullable();
+      table.boolean("email_is_confirmed").notNullable().defaultTo(false);
+      table.string("email_confirmation_code", 6);
+      table.string("password");
+      table.timestamp("created_at").notNullable().defaultTo(knex.fn.now());
+      table.timestamp("updated_at").notNullable().defaultTo(knex.fn.now());
+      table
+        .enu("role", ["user", "admin"])
+        .notNullable()
+        .defaultTo("user");
+    });
+  
+    await knex.schema.createTable("orders", (table) => {
+      table.increments("id");
+      table.string("user").notNullable();
+      table.timestamp("created_at").notNullable().defaultTo(knex.fn.now());
+      table.timestamp("updated_at").notNullable().defaultTo(knex.fn.now());
+      table
+        .enu("status", ["in_process", "shipping", "delivered"])
+        .notNullable()
+        .defaultTo("in_process");
+      table.boolean("delivered").notNullable().defaultTo(false);
+      table
+        .foreign("author_id")
+        .references("users.id")
+        .onDelete("RESTRICT")
+        .onUpdate("CASCADE");
+    });
+
+    await knex.schema.createTable("orders_products", (table) => {
+        table.increments("id");
+        table.integer("orders_id")
+        table.integer("products_id")
+      });
+
+    await knex.schema.createTable("reviews", (table) => {
+        table.increments("id");
+        table.string("author").notNullable();
+        table.text("text")
+        table.integer("order_id")
+        table.integer("photogallery_id")
+        table.timestamp("created_at").notNullable().defaultTo(knex.fn.now());
+        table.timestamp("updated_at").notNullable().defaultTo(knex.fn.now());
+        table
+          .enu("status", ["solving", "solved"])
+          .notNullable()
+          .defaultTo("solving");
+        table.boolean("published").notNullable().defaultTo(false);
+        table
+          .foreign("author_id")
+          .references("users.id")
+          .onDelete("RESTRICT")
+          .onUpdate("CASCADE");
+      });
+
+      await knex.schema.createTable("reviews_products", (table) => {
+        table.increments("id");
+        table.integer("reviews_id")
+        table.integer("products_id")
+      });
+
+      await knex.schema.createTable("photogalleries", (table) => {
+        table.increments("id");
+        table.timestamp("created_at").notNullable().defaultTo(knex.fn.now());
+        table.timestamp("updated_at").notNullable().defaultTo(knex.fn.now());
+        table
+          .enu("status", ["solving", "solved"])
+          .notNullable()
+          .defaultTo("solving");
+        table.boolean("published").notNullable().defaultTo(false);
+        table
+          .foreign("author_id")
+          .references("users.id")
+          .onDelete("RESTRICT")
+          .onUpdate("CASCADE");
+      });
+
+      await knex.schema.createTable("photos", (table) => {
+        table.increments("id");
+        table.integer("photogallery_id")
+        table.integer("photoRath_id")
+        table
+          .enu("status", ["solving", "solved"])
+          .notNullable()
+          .defaultTo("solving");
+        table.boolean("published").notNullable().defaultTo(false);
+        table
+          .foreign("author_id")
+          .references("users.id")
+          .onDelete("RESTRICT")
+          .onUpdate("CASCADE");
+      });
+
+      await knex.schema.createTable("products", (table) => {
+        table.increments("id");
+        table.string("name").notNullable();
+        table.integer("photogallery_id")
+        table.decimal("price").notNullable();
+        table.string("structure").notNullable();
+        table.string("description").notNullable();
+        table.enu("rating", ["1", "2", "3", "4", "5"])
+        table
+          .enu("status", ["solving", "solved"])
+          .notNullable()
+          .defaultTo("solving");
+        table.boolean("published").notNullable().defaultTo(false);
+        table
+          .foreign("author_id")
+          .references("users.id")
+          .onDelete("RESTRICT")
+          .onUpdate("CASCADE");
+      });
+  };
+  
+  exports.down = async (knex) => {
+    await knex.schema.dropTableIfExists("orders");
+    await knex.schema.dropTableIfExists("users");
+    await knex.schema.dropTableIfExists("reviews");
+    await knex.schema.dropTableIfExists("photogalleries");
+    await knex.schema.dropTableIfExists("photos");
+    await knex.schema.dropTableIfExists("products");
+  };

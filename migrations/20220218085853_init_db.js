@@ -25,7 +25,7 @@ exports.up = async (knex) => {
         .defaultTo("in_process");
       table.boolean("delivered").notNullable().defaultTo(false);
       table
-        .foreign("author_id")
+        .foreign("user_id")
         .references("users.id")
         .onDelete("RESTRICT")
         .onUpdate("CASCADE");
@@ -33,8 +33,18 @@ exports.up = async (knex) => {
 
     await knex.schema.createTable("orders_products", (table) => {
         table.increments("id");
-        table.integer("orders_id")
-        table.integer("products_id")
+        table.integer("order_id")
+        table.integer("product_id")
+        table
+          .foreign("order_id")
+          .references("products.id")
+          .onDelete("RESTRICT")
+          .onUpdate("CASCADE");
+        table
+          .foreign("product_id")
+          .references("products.id")
+          .onDelete("RESTRICT")
+          .onUpdate("CASCADE");
       });
 
     await knex.schema.createTable("reviews", (table) => {
@@ -55,28 +65,33 @@ exports.up = async (knex) => {
           .references("users.id")
           .onDelete("RESTRICT")
           .onUpdate("CASCADE");
+        table
+          .foreign("photogallery_id")
+          .references("photogalleries.id")
+          .onDelete("RESTRICT")
+          .onUpdate("CASCADE");
       });
 
       await knex.schema.createTable("reviews_products", (table) => {
         table.increments("id");
         table.integer("reviews_id")
         table.integer("products_id")
+        table
+          .foreign("review_id")
+          .references("reviews.id")
+          .onDelete("RESTRICT")
+          .onUpdate("CASCADE");
+        table
+          .foreign("product_id")
+          .references("products.id")
+          .onDelete("RESTRICT")
+          .onUpdate("CASCADE");
       });
 
       await knex.schema.createTable("photogalleries", (table) => {
         table.increments("id");
         table.timestamp("created_at").notNullable().defaultTo(knex.fn.now());
         table.timestamp("updated_at").notNullable().defaultTo(knex.fn.now());
-        table
-          .enu("status", ["solving", "solved"])
-          .notNullable()
-          .defaultTo("solving");
-        table.boolean("published").notNullable().defaultTo(false);
-        table
-          .foreign("author_id")
-          .references("users.id")
-          .onDelete("RESTRICT")
-          .onUpdate("CASCADE");
       });
 
       await knex.schema.createTable("photos", (table) => {
@@ -84,13 +99,8 @@ exports.up = async (knex) => {
         table.integer("photogallery_id")
         table.integer("photoRath_id")
         table
-          .enu("status", ["solving", "solved"])
-          .notNullable()
-          .defaultTo("solving");
-        table.boolean("published").notNullable().defaultTo(false);
-        table
-          .foreign("author_id")
-          .references("users.id")
+          .foreign("photogallery_id")
+          .references("photogalleries.id")
           .onDelete("RESTRICT")
           .onUpdate("CASCADE");
       });
@@ -104,13 +114,8 @@ exports.up = async (knex) => {
         table.string("description").notNullable();
         table.enu("rating", ["1", "2", "3", "4", "5"])
         table
-          .enu("status", ["solving", "solved"])
-          .notNullable()
-          .defaultTo("solving");
-        table.boolean("published").notNullable().defaultTo(false);
-        table
-          .foreign("author_id")
-          .references("users.id")
+          .foreign("photogallery_id")
+          .references("photogalleries.id")
           .onDelete("RESTRICT")
           .onUpdate("CASCADE");
       });

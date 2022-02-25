@@ -48,7 +48,7 @@ exports.up = async (knex) => {
     await knex.schema.createTable("products", (table) => {
       table.increments("id");
       table.string("name").notNullable();
-      table.integer("photogallery_id")
+      table.integer("photogallery_id").notNullable();
       table.decimal("price").notNullable();
       table.string("structure").notNullable();
       table.string("description").notNullable();
@@ -61,8 +61,8 @@ exports.up = async (knex) => {
     });
     await knex.schema.createTable("orders_products", (table) => {
       table.increments("id");
-      table.integer("order_id")
-      table.integer("product_id")
+      table.integer("order_id").notNullable();
+      table.integer("product_id").notNullable();
       table
         .foreign("order_id")
         .references("products.id")
@@ -77,12 +77,12 @@ exports.up = async (knex) => {
     await knex.schema.createTable("reviews", (table) => {
         table.increments("id");
         table.integer("author_id").notNullable();
-        table.text("text")
-        table.integer("order_id")
-        table.integer("photogallery_id")
+        table.text("text").notNullable();
+        table.integer("order_id").notNullable();
+        table.integer("photogallery_id").notNullable();
         table.timestamp("created_at").notNullable().defaultTo(knex.fn.now());
         table.timestamp("updated_at").notNullable().defaultTo(knex.fn.now());
-        table.boolean("published").notNullable().defaultTo(false);
+        table.boolean("published").notNullable().defaultTo(true);
         table
           .foreign("author_id")
           .references("users.id")
@@ -102,8 +102,8 @@ exports.up = async (knex) => {
 
       await knex.schema.createTable("reviews_products", (table) => {
         table.increments("id");
-        table.integer("review_id")
-        table.integer("product_id")
+        table.integer("review_id").notNullable();
+        table.integer("product_id").notNullable();
         table
           .foreign("review_id")
           .references("reviews.id")
@@ -118,12 +118,12 @@ exports.up = async (knex) => {
   };
   
   exports.down = async (knex) => {
-    await knex.schema.dropTableIfExists("orders");
     await knex.schema.dropTableIfExists("reviews_products");
     await knex.schema.dropTableIfExists("orders_products");
-    await knex.schema.dropTableIfExists("users");
-    await knex.schema.dropTableIfExists("reviews");
-    await knex.schema.dropTableIfExists("photogalleries");
     await knex.schema.dropTableIfExists("photos");
+    await knex.schema.dropTableIfExists("reviews");
     await knex.schema.dropTableIfExists("products");
+    await knex.schema.dropTableIfExists("orders");
+    await knex.schema.dropTableIfExists("photogalleries");
+    await knex.schema.dropTableIfExists("users");
   };

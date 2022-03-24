@@ -7,7 +7,9 @@
     "migrate:up": "knex-migrate up",
     "migrate:down": "knex-migrate down",
     "seed": "knex seed:run",
-    "test": "jest"
+    "test": "jest",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
